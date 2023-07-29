@@ -9,7 +9,7 @@ class Program extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['instructor_id', 'name'];
+    protected $fillable = ['name'];
 
     public function instructor()
     {

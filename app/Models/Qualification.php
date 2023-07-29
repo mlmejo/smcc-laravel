@@ -9,7 +9,7 @@ class Qualification extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['program_id', 'title'];
+    protected $fillable = ['title'];
 
     public function program()
     {

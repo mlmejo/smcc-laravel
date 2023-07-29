@@ -11,6 +11,7 @@ class CompetencyController extends Controller
     public function index(Qualification $qualification)
     {
         return view('competencies.index', [
+            'qualification' => $qualification,
             'competencies' => $qualification->competencies,
         ]);
     }

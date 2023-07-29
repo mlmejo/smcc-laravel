@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Instructor;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -19,32 +20,35 @@ class InstructorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string'],
+            'name' => 'required|string',
             'email' => [
                 'required',
                 'string',
                 'email',
                 'unique:users',
             ],
-            'password' => ['required', 'string'],
+            'password' => 'required|string|confirmed',
         ]);
 
-        $instructor = Instructor::create();
-        $instructor->user()->create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('instructors.index');
+        $user->instructor()->create();
+
+        return redirect()
+            ->route('instructors.index')
+            ->with('status', 'Instructor account created successfully.');
     }
 
     public function update(
-        Instructor $instructor,
         Request $request,
+        Instructor $instructor
     ) {
         $validated = $request->validate([
-            'name' => ['required', 'string'],
+            'name' => 'required|string',
             'email' => [
                 'required',
                 'string',
@@ -55,13 +59,17 @@ class InstructorController extends Controller
 
         $instructor->user()->update($validated);
 
-        return redirect()->route('instructors.index');
+        return redirect()
+            ->route('instructors.index')
+            ->with('status', 'Instructor account updated successfully.');
     }
 
     public function destroy(Instructor $instructor)
     {
         $instructor->user->delete();
 
-        return redirect()->route('instructors.index');
+        return redirect()
+            ->route('instructors.index')
+            ->with('status', 'Instructor account updated successfully.');
     }
 }
