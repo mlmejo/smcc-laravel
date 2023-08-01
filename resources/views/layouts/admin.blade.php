@@ -20,7 +20,12 @@
   <div class="w-100"></div>
   <div class="navbar-nav">
     <div class="nav-item text-nowrap">
-      <a class="nav-link px-3" href="#">Sign out</a>
+      <form action="{{ route('logout') }}" method="post" id="logoutForm">
+        @csrf
+      </form>
+      <a class="nav-link px-3" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logoutForm').submit();">
+      Sign out
+    </a>
     </div>
   </div>
 </header>
@@ -31,23 +36,29 @@
       <div class="position-sticky pt-3 sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{ route('programs.index') }}">
+            <a class="nav-link {{ !(request()->is('instructors*') || request()->is('trainees*')) ? 'active' : ''}}"
+              aria-current="page"
+              href="{{ route('programs.index') }}">
               <i class="fa fa-solid fa-gauge"></i>
               Programs Monitoring
             </a>
           </li>
+          @if (request()->user()->role === 'admin')
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{{ route('instructors.index') }}">
+            <a class="nav-link {{ request()->is('instructors*') ? 'active' : '' }}"
+              href="{{ route('instructors.index') }}">
               <i class="fa fa-solid fa-chalkboard-user"></i>
               Instructor Management
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{{ route('trainees.index') }}">
+            <a class="nav-link {{ request()->is('trainees*') ? 'active' : '' }}"
+              href="{{ route('trainees.index') }}">
               <i class="fa fa-solid fa-graduation-cap"></i>
               Trainee Management
             </a>
           </li>
+          @endif
         </ul>
       </div>
     </nav>
@@ -61,7 +72,7 @@
       @if ($errors->any())
       <div class="alert alert-danger">
         @foreach ($errors->all() as $error)
-          <p class="mb-0">{{ $error }}</p>
+        <p class="mb-0">{{ $error }}</p>
         @endforeach
       </div>
       @endif
@@ -74,7 +85,7 @@
 
 @push('scripts')
 <script>
-  $(function () {
+  $(function() {
     $('.form-select').addClass('form-select-sm');
   });
 </script>
