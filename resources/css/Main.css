@@ -11,7 +11,7 @@ td {
 .table-header {
   writing-mode: vertical-lr;
   transform: rotate(180deg);
-  vertical-align: bottom !important;
+  vertical-align: middle !important;
 }
 
 /* Utils */

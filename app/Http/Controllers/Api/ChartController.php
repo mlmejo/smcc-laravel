@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Chart;
+use App\Models\Remark;
 use Illuminate\Http\Request;
 
 class ChartController extends Controller
@@ -16,7 +17,6 @@ class ChartController extends Controller
                 'qualification.competencies',
                 'qualification.competencies.learningOutcomes',
                 'trainees',
-                'trainees.remarks',
             )->first(),
         );
     }

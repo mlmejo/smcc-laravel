@@ -5,14 +5,7 @@ import { v4 as uuid } from "uuid";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import "../css/Main.css";
-
-async function fetchChartData(chartId) {
-  const response = await fetch(`http://localhost:8000/api/charts/${chartId}`);
-  const data = await response.json();
-
-  return data;
-}
+import "../css/main.css";
 
 export default function App() {
   const chartId = document
@@ -24,6 +17,7 @@ export default function App() {
     .getAttribute("content");
 
   const [chart, setChart] = useState();
+  const [remarks, setRemarks] = useState([]);
   const [trainees, setTrainees] = useState([]);
   const [trainee, setTrainee] = useState();
 
@@ -46,34 +40,53 @@ export default function App() {
   /**
    * Learning outcome state handler
    */
-  const handleClick = (trainee, learningOutcome) => {
-    const formData = new FormData();
-
-    formData.append("trainee_id", trainee.id);
-    formData.append("learning_outcome_id", learningOutcome.id);
-
+  const handleClick = (_trainee, _learningOutcome) => {
     const update = async () => {
       const response = await fetch(
         `http://localhost:8000/api/charts/${chartId}/remarks`,
         {
           method: "PUT",
           headers: {
-            "X-XSRF-TOKEN": csrfToken,
+            "Content-type": "application/json",
+            "X-CSRF-TOKEN": csrfToken,
           },
+          body: JSON.stringify({
+            trainee_id: _trainee.id,
+            learning_outcome_id: _learningOutcome.id,
+          }),
         },
       );
-
-      if (!response.ok) {
-        console.error(response);
-      }
+      const data = await response.json();
+      setRemarks(data);
     };
 
     update();
   };
 
   useEffect(() => {
-    const data = fetchChartData(chartId);
-    setChart(data);
+    const fetchData = async () => {
+      const response = await fetch(
+        `http://localhost:8000/api/charts/${chartId}`,
+      );
+      const data = await response.json();
+
+      setChart(data);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        `http://localhost:8000/api/charts/${chartId}/remarks`,
+      );
+      const data = await response.json();
+
+      setRemarks(data);
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -114,7 +127,7 @@ export default function App() {
                 ))}
               </React.Fragment>
             ))}
-            <th rowSpan={2} className="text-align-bottom">
+            <th rowSpan={2} className="text-align-bottom no-print">
               Action
             </th>
           </tr>
@@ -126,30 +139,65 @@ export default function App() {
           </tr>
         </thead>
         <tbody>
+          {!(chart.trainees.length > 0) ? (
+            <tr>
+              <td colSpan="100%">No trainees in this monitoring chart.</td>
+            </tr>
+          ) : (
+            <></>
+          )}
           {chart.trainees.map((_trainee) => (
             <tr key={uuid()}>
               <td>{_trainee.last_name}</td>
               <td>{_trainee.first_name}</td>
               <td>{_trainee.middle_initial}</td>
               <td>{_trainee.trainee_number}</td>
-              {chart.qualification.competencies.map((competency) => (
-                <React.Fragment key={uuid()}>
-                  <td className="text-center">
-                    <Form.Check type="checkbox" disabled />
-                  </td>
-                  {competency.learning_outcomes.map((learningOutcome) => (
-                    <td key={uuid()} className="text-center">
+              {chart.qualification.competencies.map((competency) => {
+                const completed = competency.learning_outcomes.every(
+                  (_learningOutcome) => {
+                    return remarks.some((_remark) => {
+                      return (
+                        _remark.learning_outcome_id === _learningOutcome.id &&
+                        _remark.completed &&
+                        _remark.trainee_id == _trainee.id
+                      );
+                    });
+                  },
+                );
+
+                return (
+                  <React.Fragment key={uuid()}>
+                    <td className="text-center">
                       <Form.Check
                         type="checkbox"
-                        onClick={() => {
-                          handleClick(_trainee, learningOutcome);
-                        }}
+                        disabled
+                        checked={completed}
                       />
                     </td>
-                  ))}
-                </React.Fragment>
-              ))}
-              <td>
+                    {competency.learning_outcomes.map((_learningOutcome) => {
+                      const remark = remarks.find((_remark) => {
+                        return (
+                          _remark.trainee_id == _trainee.id &&
+                          _remark.learning_outcome_id == _learningOutcome.id
+                        );
+                      });
+
+                      return (
+                        <td key={uuid()} className="text-center">
+                          <Form.Check
+                            type="checkbox"
+                            onChange={(e) => {
+                              handleClick(_trainee, _learningOutcome);
+                            }}
+                            checked={remark ? remark.completed : false}
+                          />
+                        </td>
+                      );
+                    })}
+                  </React.Fragment>
+                );
+              })}
+              <td className="no-print">
                 <button
                   style={{ all: "unset" }}
                   onClick={() => {
@@ -166,9 +214,13 @@ export default function App() {
       </table>
 
       <div className="d-flex mt-3 justify-content-between align-items-center">
-        <div></div>
-
         <div>
+          <p>Signed & Approved by:</p>
+          <p className="mb-0 fw-bold">{chart.instructor.user.name}</p>
+          <p>{chart.qualification.title} Trainer</p>
+        </div>
+
+        <div className="no-print">
           <Button
             variant="primary"
             size="sm"
@@ -240,17 +292,12 @@ export default function App() {
         </Modal.Header>
         <Modal.Body>
           <form
-            action={`http://localhost:8000/api/charts/${chartId}/trainees`}
+            action={`http://localhost:8000/api/charts/${chartId}/trainees/${removingTrainee?.id}`}
             method="post"
             id="removeTraineeForm"
           >
             <input type="hidden" name="_token" value={csrfToken} />
             <input type="hidden" name="_method" value="DELETE" />
-            <input
-              type="hidden"
-              name="trainee_id"
-              value={removingTrainee?.id}
-            />
             Are you sure you want to remove{" "}
             <strong>
               {removingTrainee?.last_name}, {removingTrainee?.first_name}{" "}

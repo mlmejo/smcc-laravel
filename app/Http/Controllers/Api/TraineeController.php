@@ -42,9 +42,16 @@ class TraineeController extends Controller
             ->with('status', 'Trainee added to monitoring chart.');
     }
 
-    public function destroy(Trainee $trainee)
+    public function destroy(Chart $chart, Trainee $trainee)
     {
-        $trainee->delete();
-        return response()->noContent();
+        $chart->trainees()->detach($trainee->id);
+
+        Remark::where([
+            'chart_id' => $chart->id,
+            'trainee_id' => $trainee->id,
+        ])->delete();
+
+        return back()
+            ->with('status', 'Trainee removed from monitoring chart.');
     }
 }

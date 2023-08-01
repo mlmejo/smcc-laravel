@@ -28,4 +28,9 @@ class Chart extends Model
     {
         return $this->belongsToMany(Trainee::class);
     }
+
+    public function remarks()
+    {
+        return $this->hasMany(Remark::class);
+    }
 }

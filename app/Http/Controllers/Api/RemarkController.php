@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class RemarkController extends Controller
 {
+    public function index(Chart $chart)
+    {
+        return response()->json($chart->remarks()->with('trainee')->get());
+    }
+
     public function update(Request $request, Chart $chart)
     {
         $request->validate([
@@ -29,6 +34,6 @@ class RemarkController extends Controller
             'completed' => !($remark->completed),
         ]);
 
-        return response()->noContent();
+        return response()->json($chart->remarks()->with('trainee')->get());
     }
 }

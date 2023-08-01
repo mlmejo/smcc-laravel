@@ -10,6 +10,7 @@ use App\Http\Controllers\LearningOutcomeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\QualificationController;
 use App\Http\Controllers\TraineeController;
+use App\Http\Controllers\TraineeCSVController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,12 +49,16 @@ Route::resource('instructors', InstructorController::class)
 Route::resource('trainees', TraineeController::class)
     ->middleware('auth');
 
+Route::post('/charts/{chart}/trainees/import', [TraineeCSVController::class, 'store'])
+    ->middleware('auth')->name('trainees.csv.store');
+
 Route::get('/api/charts/{chart}', [ApiChartController::class, 'show']);
 Route::get('/api/trainees', [ApiTraineeController::class, 'index']);
 
 Route::post('/api/charts/{chart}/trainees', [ApiTraineeController::class, 'store']);
-Route::delete('/api/trainees/{trainee}', [ApiTraineeController::class, 'destroy']);
+Route::delete('/api/charts/{chart}/trainees/{trainee}', [ApiTraineeController::class, 'destroy']);
 
+Route::get('/api/charts/{chart}/remarks', [RemarkController::class, 'index']);
 Route::put('/api/charts/{chart}/remarks', [RemarkController::class, 'update']);
 
 require __DIR__ . '/auth.php';
