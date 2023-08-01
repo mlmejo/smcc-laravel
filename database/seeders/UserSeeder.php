@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
             'name' => 'Administrator',
             'email' => 'admin@smcc.com',
             'password' => Hash::make('password'),
+            'role' => 'admin',
         ]);
     }
 }

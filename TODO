@@ -1,0 +1,3 @@
+1. Create a general function to fetch chart data.
+2. onChange triggers a post request altering chart state.
+3. Check the `completed` column of each learning outcome for conditional rendering.

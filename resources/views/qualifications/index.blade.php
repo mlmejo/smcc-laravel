@@ -48,7 +48,7 @@
           {{ $qualification->id }}
         </td>
         <td>
-          <a href="{{ route('qualifications.competencies.index', $qualification) }}" class="text-decoration-none">
+          <a href="{{ route('qualifications.charts.index', $qualification) }}" class="text-decoration-none">
             {{ $qualification->title }}
           </a>
         </td>
@@ -57,7 +57,6 @@
             <span data-bs-toggle="tooltip" data-bs-title="Edit Qualification">
               <i class="fa fa-solid fa-edit text-success"></i>
             </span>
-
           </button>
 
           <button style="all: unset" data-bs-toggle="modal" data-bs-target="#deleteQualificationModal{{ $qualification->id }}">
@@ -65,6 +64,10 @@
               <i class="fa fa-solid fa-trash text-danger"></i>
             </span>
           </button>
+
+          <a href="{{ route('qualifications.competencies.index', $qualification) }}" data-bs-toggle="tooltip" data-bs-title="View Competencies">
+            <i class="fa fa-solid fa-lines-leaning text-primary"></i>
+          </a>
         </td>
       </tr>
 

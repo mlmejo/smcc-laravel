@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('remarks', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('role', ['admin', 'instructor']);
-            $table->rememberToken();
+            $table->foreignId('chart_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('learning_outcome_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('trainee_id')->constrained()->cascadeOnDelete();
+            $table->boolean('completed')->default(false);
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('remarks');
     }
 };

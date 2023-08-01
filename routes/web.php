@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\ChartController as ApiChartController;
+use App\Http\Controllers\Api\RemarkController;
+use App\Http\Controllers\Api\TraineeController as ApiTraineeController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\CompetencyController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\LearningOutcomeController;
@@ -32,6 +36,9 @@ Route::resource('programs.qualifications', QualificationController::class)
 Route::resource('qualifications.competencies', CompetencyController::class)
     ->shallow()->middleware('auth');
 
+Route::resource('qualifications.charts', ChartController::class)
+    ->shallow()->middleware('auth');
+
 Route::resource('competencies.learningOutcomes', LearningOutcomeController::class)
     ->shallow()->middleware('auth');
 
@@ -40,5 +47,13 @@ Route::resource('instructors', InstructorController::class)
 
 Route::resource('trainees', TraineeController::class)
     ->middleware('auth');
+
+Route::get('/api/charts/{chart}', [ApiChartController::class, 'show']);
+Route::get('/api/trainees', [ApiTraineeController::class, 'index']);
+
+Route::post('/api/charts/{chart}/trainees', [ApiTraineeController::class, 'store']);
+Route::delete('/api/trainees/{trainee}', [ApiTraineeController::class, 'destroy']);
+
+Route::put('/api/charts/{chart}/remarks', [RemarkController::class, 'update']);
 
 require __DIR__ . '/auth.php';

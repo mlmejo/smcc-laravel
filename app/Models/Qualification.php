@@ -20,4 +20,9 @@ class Qualification extends Model
     {
         return $this->hasMany(Competency::class);
     }
+
+    public function charts()
+    {
+        return $this->hasMany(Chart::class);
+    }
 }

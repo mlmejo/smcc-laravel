@@ -15,4 +15,14 @@ class Trainee extends Model
         'first_name',
         'middle_initial',
     ];
+
+    public function charts()
+    {
+        return $this->belongsToMany(Chart::class);
+    }
+
+    public function remarks()
+    {
+        return $this->hasMany(Remark::class);
+    }
 }

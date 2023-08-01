@@ -1,7 +1,16 @@
 @extends('layouts.admin')
 
 @section('main')
-<h1 class="h4 mb-4">{{ $qualification->title }} Competencies</h1>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item">
+      <a href="{{ route('programs.qualifications.index', $qualification->program) }}">
+        {{ $qualification->title }}
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Competencies</li>
+  </ol>
+</nav>
 
 <button type="button" class="mb-2 btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createCompetencyModal">
   Create Competency
@@ -106,7 +115,7 @@
                 @csrf
                 @method('DELETE')
                 <p class="mb-0">
-                  Are you sure you want to delete <strong>{{ $competency->title }}</strong>?
+                  Are you sure you want to delete this competency?
                 </p>
               </form>
             </div>

@@ -68,7 +68,6 @@
             <span data-bs-toggle="tooltip" data-bs-title="Edit Instructor">
               <i class="fa fa-solid fa-edit text-success"></i>
             </span>
-
           </button>
 
           <button style="all: unset" data-bs-toggle="modal" data-bs-target="#deleteInstructorModal{{ $instructor->id }}">
