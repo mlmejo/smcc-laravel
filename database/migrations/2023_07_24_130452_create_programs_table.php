@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('instructor_id')->constrained()->cascadeOnDelete();
             $table->string('name')->unique();
+            $table->string('school_year');
+            $table->enum('semester', ['1st semester', '2nd semester']);
             $table->timestamps();
         });
     }

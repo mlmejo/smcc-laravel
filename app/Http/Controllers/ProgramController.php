@@ -22,10 +22,15 @@ class ProgramController extends Controller
         $request->validate([
             'instructor' => 'required|exists:instructors,id',
             'name' => 'required|string|unique:programs',
+            'school_year' => 'required|string',
+            'semester' => [
+                'required',
+                Rule::in(['1st semester', '2nd semester']),
+            ],
         ]);
 
         $instructor = Instructor::find($request->instructor);
-        $instructor->programs()->create($request->only('name'));
+        $instructor->programs()->create($request->except('instructor'));
 
         return redirect()
             ->route('programs.index')

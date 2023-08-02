@@ -32,6 +32,22 @@
             <label for="name" class="col-form-label col-form-label-sm">Name</label>
             <input type="text" name="name" id="name" class="form-control form-control-sm">
           </div>
+
+          <div class="mb-3">
+            <label for="school_year" class="col-form-label col-form-label-sm">
+              School year
+            </label>
+            <input type="text" name="school_year" id="school_year" class="form-control form-control-sm">
+          </div>
+
+          <div class="mb-3">
+            <label for="semester" class="col-form-label col-form-label-sm">Semester</label>
+            <select name="semester" id="semester" class="form-select form-select-sm">
+              <option value="" disabled selected>Select Semester</option>
+              <option value="1st semester">1st semester</option>
+              <option value="2nd semester">2nd semester</option>
+            </select>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -48,7 +64,9 @@
       <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Program</th>
+        <th>Instructor</th>
+        <th>School year</th>
+        <th>Semester</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -62,6 +80,8 @@
           </a>
         </td>
         <td>{{ $program->instructor->user->name }}</td>
+        <td>{{ $program->school_year }}</td>
+        <td>{{ $program->semester }}</td>
         <td>
           <button style="all: unset" data-bs-toggle="modal" data-bs-target="#editProgramModal{{ $program->id }}">
             <span data-bs-toggle="tooltip" data-bs-title="Edit Program">
